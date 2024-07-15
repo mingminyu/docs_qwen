@@ -161,7 +161,6 @@ nav:
       - 推理:
         - 与 Qwen2 交互: v2/chat_with_qwen2.md
       
-
       - 本地运行:
         - llama.cpp: v2/llama.cpp.md
-        
+        - MLX-LM: v2/mlx-lm.md
