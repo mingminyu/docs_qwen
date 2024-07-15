@@ -18,4 +18,38 @@ ollama run qwen2:0.5b
 
 ## 2. 运行 GGUF 文件
 
-有时您可能不想拉取模型，而是希望直接使用自己的GGUF文件来配合Ollama。假设您有一个名为 qwen2-7b-instruct-q5_0.gguf 的Qwen2的GGUF文件。在第一步中，您需要创建一个名为 Modelfile 的文件。该文件的内容如下所示：
+有时您可能不想拉取模型，而是希望直接使用自己的 GGUF 文件来配合 Ollama。假设您有一个名为  qwen2-7b-instruct-q5_0.gguf 的 Qwen2 的 GGUF 文件。在第一步中，您需要创建一个名为 Modelfile 的文件。
+
+```dockerfile Modelfile
+FROM qwen2-7b-instruct-q5_0.gguf
+
+# set the temperature to 1 [higher is more creative, lower is more coherent]
+PARAMETER temperature 0.7
+PARAMETER top_p 0.8
+PARAMETER repeat_penalty 1.05
+PARAMETER top_k 20
+
+TEMPLATE """{{ if and .First .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+{{ .Response }}"""
+
+# set the system message
+SYSTEM """
+You are a helpful assistant.
+"""
+```
+
+然后通过运行下列命令来创建一个 Ollama 模型
+
+```bash
+ollama create qwen2_7b -f Modelfile
+```
+
+接下来，我们就可以运行自己的 Ollama 模型了：
+
+```bash
+ollama run qwen2_7b
+```
