@@ -30,7 +30,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.top
     - navigation.indexes
-    - navigation.sections
+    # - navigation.sections
     - navigation.tracking
     - search.highlight
     - search.share
@@ -53,9 +53,8 @@ theme:
         icon: material/brightness-4
         name: 明亮模式
   
-  favicon: assets/logo.svg
-  logo: assets/logo.svg
-  
+  favicon: custom/assets/qwen.svg
+  logo: custom/assets/qwen.svg
   language: zh
 
 plugins:
@@ -152,6 +151,12 @@ markdown_extensions:
       custom_checkbox: true
 
 nav:
-  - 首页: 
-    - index.md
-  
+  - 通义千问:
+    - Qwen 2:
+      - v2/index.md
+      - 快速入门:
+        - 安装: v2/installation.md
+        - 快速开始: v2/quickstart.md
+
+      - 推理:
+        - 与 Qwen2 交流: v2/chat_with_qwen2.md
