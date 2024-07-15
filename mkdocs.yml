@@ -164,3 +164,12 @@ nav:
       - 本地运行:
         - llama.cpp: v2/llama.cpp.md
         - MLX-LM: v2/mlx-lm.md
+
+      - WEB UI:
+        - Text Generation Web UI: v2/text-generate-web-ui.md
+      
+      - 量化:
+        - AWQ: v2/awq.md
+        - GPTQ: v2/gptq.md
+        - GGUF: v2/gguf.md
+
