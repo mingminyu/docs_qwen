@@ -71,4 +71,4 @@ llama.cpp 为我们提供了评估 GGUF 模型 PPL 性能的方法。为了实�
 
 ## 4. LM Studio 中使用 GGUF
 
-如果你仍然觉得使用 llama.cpp 有困难，我建议你尝试一下 LM Studio 这个平台，它允许你搜索和运行本地的大规模语言模型。Qwen2 已经正式成为 LM Studio的一部分。
+如果你仍然觉得使用 llama.cpp 有困难，我建议你尝试一下 LM Studio 这个平台，它允许你搜索和运行本地的大规模语言模型。目前 Qwen2 已经正式成为 LM Studio的一部分。
