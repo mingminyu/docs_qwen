@@ -159,4 +159,9 @@ nav:
         - 快速开始: v2/quickstart.md
 
       - 推理:
-        - 与 Qwen2 交流: v2/chat_with_qwen2.md
+        - 与 Qwen2 交互: v2/chat_with_qwen2.md
+      
+
+      - 本地运行:
+        - llama.cpp: v2/llama.cpp.md
+        
