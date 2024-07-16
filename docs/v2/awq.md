@@ -137,7 +137,7 @@ for msg in messages:  # (1)!
 
   1. 每个 `msg` 是一个典型的聊天消息
 
-      ```python
+      ```python linenums="1"
       [
           {"role": "system", "content": "You are a helpful assistant."},
           {"role": "user", "content": "Tell me who you are."},
@@ -153,7 +153,7 @@ model.quantize(tokenizer, quant_config=quant_config, calib_data=data)
 
 最后，保存量化模型：
 
-```python
+```python linenums="1"
 model.save_quantized(quant_path, safetensors=True, shard_size="4GB")
 tokenizer.save_pretrained(quant_path)
 ```

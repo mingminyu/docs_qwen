@@ -164,6 +164,7 @@ nav:
       - 本地运行:
         - llama.cpp: v2/llama.cpp.md
         - MLX-LM: v2/mlx-lm.md
+        - Ollama: v2/ollama.md
 
       - WEB UI:
         - Text Generation Web UI: v2/text-generate-web-ui.md
