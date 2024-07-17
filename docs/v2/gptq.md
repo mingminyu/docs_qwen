@@ -182,4 +182,3 @@ tokenizer.save_pretrained(quant_path)
 !!! warning "不支持切片"
 
     `save_quantized` 方法不支持模型分片。若要实现模型分片，我们需要先加载模型，然后使用来自 transformers 库的 `save_pretrained` 方法来保存并分片模型。
-
