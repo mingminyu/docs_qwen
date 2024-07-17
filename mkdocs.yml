@@ -87,6 +87,10 @@ plugins:
 
 extra:
   generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/QwenLM/Qwen2
+    - icon: 
 
 extra_css:
   - custom/stylesheets/extra.css
@@ -173,4 +177,23 @@ nav:
         - AWQ: v2/awq.md
         - GPTQ: v2/gptq.md
         - GGUF: v2/gguf.md
+
+      - 部署:
+        - vLLM: v2/vllm.md
+        - TGI: v2/tgi.md
+        - SkyPilot: v2/skypilot.md
+
+      # - 训练:
+      #   - 微调示例:
+      #   - LLaMA Factory:
+
+      # - 框架:
+      #   - 函数调用:
+      #   - Agent:
+      #   - LlamaIndex:
+      #   - LangChain:
+
+      # - 评测:
+      #   - 量化模型效果:
+      #   - 效率评估:
 
