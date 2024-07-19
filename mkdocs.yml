@@ -90,7 +90,8 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/QwenLM/Qwen2
-    - icon: 
+    - icon: fontawesome/solid/book
+      link: https://qwen.readthedocs.io/zh-cn/latest
 
 extra_css:
   - custom/stylesheets/extra.css
