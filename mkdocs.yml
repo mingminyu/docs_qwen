@@ -195,7 +195,6 @@ nav:
         - LlamaIndex: v2/llamaindex.md
         - LangChain: v2/langchain.md
 
-      # - 评测:
-      #   - 量化模型效果:
-      #   - 效率评估:
-
+      - 评测:
+        - 模型效果: v2/quantization_benchmark.md
+        - 效率评估: v2/speed_benchmark.md
