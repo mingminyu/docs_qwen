@@ -1,35 +1,39 @@
 # 效率评估
 
-本部分介绍 Qwen2 模型（原始模型和量化模型）的效率测试结果，包括推理速度(tokens/s)与不同上下文长度时的显存占用(GB)。
+本文介绍 Qwen2 模型（原始模型和量化模型）的效率测试结果，包括推理速度与不同上下文长度时的显存占用。
 
-测试 HuggingFace transformers 时的环境配置：
+???+ "Transformers 和 vLLM 测试环境"
 
-- NVIDIA A100 80GB
-- CUDA 11.8
-- Pytorch 2.1.2+cu118
-- Flash Attention 2.3.3
-- Transformers 4.38.2
-- AutoGPTQ 0.7.1
-- AutoAWQ 0.2.4
+    === "HF Transformers"
 
-测试 vLLM 时的环境配置：
+        - NVIDIA A100 80GB
+        - CUDA 11.8
+        - Pytorch 2.1.2+cu118
+        - Flash Attention 2.3.3
+        - Transformers 4.38.2
+        - AutoGPTQ 0.7.1
+        - AutoAWQ 0.2.4
 
-- NVIDIA A100 80GB
-- CUDA 11.8
-- Pytorch 2.3.0+cu118
-- Flash Attention 2.5.6
-- Transformers 4.40.1
-- vLLM 0.4.2
+    === "vLLM"
 
-注意：
+        - NVIDIA A100 80GB
+        - CUDA 11.8
+        - Pytorch 2.3.0+cu118
+        - Flash Attention 2.5.6
+        - Transformers 4.40.1
+        - vLLM 0.4.2
 
-- `batch_size` 设置为 1，使用 GPU 数量尽可能少
-- 我们测试生成 2048 tokens 时的速度与显存占用，输入长度分别为 1、6144、14336、30720、63488、129024 tokens。(超过 32K 长度仅有 Qwen2-72B-Instuct 与 Qwen2-7B-Instuct 支持)
-- 对于vLLM，由于 GPU 显存预分配，实际显存使用难以评估。默认情况下，统一设定为`gpu_memory_utilization=0.9`、`max_model_len=32768`、`enforce_eager=False`。
+!!! warning "注意事项"
+
+    - 为保证 使用 GPU 数量尽可能少，这里 `batch_size` 设置为 1。
+    - 测试生成 2048 tokens 时的速度与显存占用，输入长度分别为 1、6144、14336、30720、63488、129024 tokens。(超过 32K 长度仅有 Qwen2-72B-Instruct 与 Qwen2-7B-Instruct 支持)
+    - 对于 vLLM，由于 GPU 显存预分配，实际显存使用难以评估。默认情况下，统一设定为 `gpu_memory_utilization=0.9`、`max_model_len=32768`、`enforce_eager=False`。
+
+## 1. Qwen2 Transformers 模型效率对比
 
 ???+ "Qwen2 不同 Transformers 模型的效率对比"
 
-    === "0.5B Transformers"
+    === "0.5B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) | 占用显存(GB) |
         | ------------ | ------------ | ------- | --------------- | -------------- |
@@ -50,7 +54,7 @@
         |              | GPTQ-Int4    | 1       | 48.18           | 27.12          |
         |              | AWQ          | 1       | 38.19           | 27.11          |
 
-    === "1.5B Transformers"
+    === "1.5B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) | 占用显存(GB) |
         | ------------ | ------------ | ------- | --------------- | -------------- |
@@ -71,7 +75,7 @@
         |              | GPTQ-Int4    | 1       | 31.30           | 28.54          |
         |              | AWQ          | 1       | 32.16           | 28.51          |
 
-    === "7B Transformers"
+    === "7B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) | 占用显存(GB) |
         | ------------ | ------------ | ------- | --------------- | -------------- |
@@ -92,7 +96,7 @@
         |              | GPTQ-Int4    | 1       | 17.17           | 33.76          |
         |              | AWQ          | 1       | 17.87           | 33.63          |
 
-    === "57B-A14B Transformers"
+    === "57B-A14B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) | 占用显存(GB) |
         | ------------ | ------------ | ------- | --------------- | -------------- |
@@ -105,7 +109,7 @@
         | 30720        | BF16         | 2       | 4.12           | 163.77          |
         |              | GPTQ-Int4    | 1       | 4.72           | 58.01          |
 
-    === "72B Transformers"
+    === "72B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) | 占用显存(GB) |
         | ------------ | ------------ | ------- | --------------- | -------------- |
@@ -126,8 +130,9 @@
         |              | GPTQ-Int4    | 2       | 3.02           | 107.94          |
         |              | AWQ          | 2       | 1.85           | 88.60          |
 
+## 2. Qwen2 vLLM 模型效率对比
 
-数据由vLLM吞吐量测试脚本测得，可通过以下命令复现:
+数据由 vLLM 吞吐量测试脚本测得，可通过以下命令复现:
 
 ```bash linenums="1"
 python vllm/benchmarks/benchmark_throughput.py \
@@ -141,7 +146,7 @@ python vllm/benchmarks/benchmark_throughput.py \
 
 ???+ "Qwen2 不同 vLLM 模型的效率对比"
 
-    === "0.5B vLLM"
+    === "0.5B"
 
         | 输入长度  | 量化        | GPU 数量 | 速度(tokens/s) |
         | ----- | --------- | ------ | ------------ |
@@ -183,7 +188,7 @@ python vllm/benchmarks/benchmark_throughput.py \
         |       | GPTQ-Int4 | 1      | 87.49        |
         |       | AWQ       | 1      | 82.88        |
 
-    === "7B vLLM"
+    === "7B"
 
         | 输入长度  | 量化        | GPU 数量 | 速度(tokens/s) |
         | ----- | --------- | ------ | ------------ |
@@ -212,7 +217,7 @@ python vllm/benchmarks/benchmark_throughput.py \
         |       | GPTQ-Int4 | 1      | 29.39        |
         |       | AWQ       | 1      | 27.13        |
 
-    === "57B-A14B vLLM"
+    === "57B-A14B"
 
         | 输入长度 | 量化 | GPU 数量 | 速度(tokens/s) |
         | ------------ | ------------ | ------- | --------------- |
@@ -221,7 +226,7 @@ python vllm/benchmarks/benchmark_throughput.py \
         | 14336        | BF16         | 2       | 21.25           | 
         | 30720        | BF16         | 2       | 20.24         | 
 
-    === "72B vLLM"
+    === "72B"
 
         | 输入长度  | 量化        | GPU 数量 | 速度(tokens/s) |
         | ----- | --------- | ------ | ------------ |
@@ -255,13 +260,11 @@ python vllm/benchmarks/benchmark_throughput.py \
 
         不同参数设定下，表现可能会出现差异。
 
-
 混合专家模型 (Mixture-of-Experts, MoE) 与稠密模型相比，当批大小较大时，吞吐量更大。下表展示了有关数据：
 
-| 模型                    | 量化 | # 提示词   | QPS  | Tokens/s |
+| 模型                    | 量化 | 提示词   | QPS  | Tokens/s |
 |--------------------------|--------------|-------------|------|----------|
 | Qwen1.5-32B-Chat         | BF16         | 100         | 6.68 | 7343.56  |
 | Qwen2-57B-A14B-Instruct  | BF16         | 100         | 4.81 | 5291.15  |
 | Qwen1.5-32B-Chat         | BF16         | 1000        | 7.99 | 8791.35  |
 | Qwen2-57B-A14B-Instruct  | BF16         | 1000        | 5.18 | 5698.37  |
-
