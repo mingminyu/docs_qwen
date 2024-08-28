@@ -20,7 +20,7 @@ ollama run qwen2:0.5b
 
 有时您可能不想拉取模型，而是希望直接使用自己的 GGUF 文件来配合 Ollama。假设您有一个名为  qwen2-7b-instruct-q5_0.gguf 的 Qwen2 的 GGUF 文件。在第一步中，您需要创建一个名为 Modelfile 的文件。
 
-```dockerfile Modelfile
+```bash linenums="1"
 FROM qwen2-7b-instruct-q5_0.gguf
 
 # set the temperature to 1 [higher is more creative, lower is more coherent]
