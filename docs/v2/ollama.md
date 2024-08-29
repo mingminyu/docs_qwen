@@ -16,6 +16,30 @@ ollama run qwen2
 ollama run qwen2:0.5b
 ```
 
+成功启动服务后（端口启动在 11434），可以通过发送请求来和 Qwen2 进行交互。
+
+```python linenums="1"
+import requests
+import json
+
+headers = {"Content-Type": "application/json"}
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "你好"}
+]
+model = "qwen2:0.5b"
+ollama_url = "http://localhost:11434/v1/chat/completions"
+data = {
+    "model": model,
+    "messages": messages
+}
+
+resp = requests.post(ollama_url, headers=headers, data=json.dumps(data))
+resp
+```
+
+
+
 ## 2. 运行 GGUF 文件
 
 有时您可能不想拉取模型，而是希望直接使用自己的 GGUF 文件来配合 Ollama。假设您有一个名为  qwen2-7b-instruct-q5_0.gguf 的 Qwen2 的 GGUF 文件。在第一步中，您需要创建一个名为 Modelfile 的文件。
