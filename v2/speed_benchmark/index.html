@@ -1,0 +1,2853 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="通义千问">
+      
+      
+        <meta name="author" content="Mingmin Yu">
+      
+      
+        <link rel="canonical" href="https://mingminyu.github.io/v2/speed_benchmark/">
+      
+      
+        <link rel="prev" href="../quantization_benchmark/">
+      
+      
+      
+      <link rel="icon" href="../../custom/assets/qwen.svg">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
+    
+    
+      
+        <title>效率评估 - 通义千问</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../custom/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="通义千问" class="md-header__button md-logo" aria-label="通义千问" data-md-component="logo">
+      
+  <img src="../../custom/assets/qwen.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            通义千问
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              效率评估
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="暗黑模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="暗黑模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="明亮模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="明亮模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../.." class="md-tabs__link">
+          
+  
+    
+  
+  通义千问
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="通义千问" class="md-nav__button md-logo" aria-label="通义千问" data-md-component="logo">
+      
+  <img src="../../custom/assets/qwen.svg" alt="logo">
+
+    </a>
+    通义千问
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    通义千问
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            通义千问
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../.." class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Qwen 2
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_1" id="__nav_1_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            Qwen 2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_2" id="__nav_1_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    快速入门
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            快速入门
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    安装
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    快速开始
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_3" id="__nav_1_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    推理
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            推理
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chat_with_qwen2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    与 Qwen2 交互
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_4" id="__nav_1_1_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    本地运行
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            本地运行
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llama.cpp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    llama.cpp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mlx-lm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MLX-LM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ollama/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ollama
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_5" id="__nav_1_1_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    WEB UI
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            WEB UI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../text-generate-web-ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Generation Web UI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_6" id="__nav_1_1_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    量化
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            量化
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../awq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AWQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gptq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GPTQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gguf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GGUF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_7" id="__nav_1_1_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    部署
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            部署
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vllm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    vLLM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tgi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TGI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../skypilot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SkyPilot
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_8" id="__nav_1_1_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    训练
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            训练
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sft_example/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    微调示例
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sft_llama_factory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LLaMA Factory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_9" id="__nav_1_1_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    框架
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            框架
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../function_call/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    函数调用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qwen_agent/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llamaindex/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LlamaIndex
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../langchain/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LangChain
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_1_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_1_10" id="__nav_1_1_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    评测
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_1_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_1_10">
+            <span class="md-nav__icon md-icon"></span>
+            评测
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quantization_benchmark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    模型效果
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    效率评估
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    效率评估
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-qwen2-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Qwen2 Transformers 模型效率对比
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-qwen2-vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Qwen2 vLLM 模型效率对比
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-qwen2-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Qwen2 Transformers 模型效率对比
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-qwen2-vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Qwen2 vLLM 模型效率对比
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="_1">效率评估<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>本文介绍 Qwen2 模型（原始模型和量化模型）的效率测试结果，包括推理速度与不同上下文长度时的显存占用。</p>
+<details open="open">
+<summary>Transformers 和 vLLM 测试环境</summary>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="_1-hf-transformers" name="__tabbed_1" type="radio" /><input id="_1-vllm" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="_1-hf-transformers">HF Transformers</label><label for="_1-vllm">vLLM</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>NVIDIA A100 80GB</li>
+<li>CUDA 11.8</li>
+<li>Pytorch 2.1.2+cu118</li>
+<li>Flash Attention 2.3.3</li>
+<li>Transformers 4.38.2</li>
+<li>AutoGPTQ 0.7.1</li>
+<li>AutoAWQ 0.2.4</li>
+</ul>
+</div>
+<div class="tabbed-block">
+<ul>
+<li>NVIDIA A100 80GB</li>
+<li>CUDA 11.8</li>
+<li>Pytorch 2.3.0+cu118</li>
+<li>Flash Attention 2.5.6</li>
+<li>Transformers 4.40.1</li>
+<li>vLLM 0.4.2</li>
+</ul>
+</div>
+</div>
+</div>
+</details>
+<div class="admonition warning">
+<p class="admonition-title">注意事项</p>
+<ul>
+<li>为保证 使用 GPU 数量尽可能少，这里 <code>batch_size</code> 设置为 1。</li>
+<li>测试生成 2048 tokens 时的速度与显存占用，输入长度分别为 1、6144、14336、30720、63488、129024 tokens。(超过 32K 长度仅有 Qwen2-72B-Instruct 与 Qwen2-7B-Instruct 支持)</li>
+<li>对于 vLLM，由于 GPU 显存预分配，实际显存使用难以评估。默认情况下，统一设定为 <code>gpu_memory_utilization=0.9</code>、<code>max_model_len=32768</code>、<code>enforce_eager=False</code>。</li>
+</ul>
+</div>
+<h2 id="1-qwen2-transformers">1. Qwen2 Transformers 模型效率对比<a class="headerlink" href="#1-qwen2-transformers" title="Permanent link">&para;</a></h2>
+<details open="open">
+<summary>Qwen2 不同 Transformers 模型的效率对比</summary>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:5"><input checked="checked" id="1-qwen2-transformers-05b" name="__tabbed_2" type="radio" /><input id="1-qwen2-transformers-15b" name="__tabbed_2" type="radio" /><input id="1-qwen2-transformers-7b" name="__tabbed_2" type="radio" /><input id="1-qwen2-transformers-57b-a14b" name="__tabbed_2" type="radio" /><input id="1-qwen2-transformers-72b" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="1-qwen2-transformers-05b">0.5B</label><label for="1-qwen2-transformers-15b">1.5B</label><label for="1-qwen2-transformers-7b">7B</label><label for="1-qwen2-transformers-57b-a14b">57B-A14B</label><label for="1-qwen2-transformers-72b">72B</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+<th>占用显存(GB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>49.94</td>
+<td>1.17</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>36.35</td>
+<td>0.85</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>49.56</td>
+<td>0.68</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>38.78</td>
+<td>0.68</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>1</td>
+<td>50.83</td>
+<td>6.42</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>36.56</td>
+<td>6.09</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>49.63</td>
+<td>5.93</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>38.73</td>
+<td>5.92</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>49.56</td>
+<td>13.48</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>36.23</td>
+<td>13.15</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>48.68</td>
+<td>12.97</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>38.94</td>
+<td>12.99</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>1</td>
+<td>49.25</td>
+<td>27.61</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>34.61</td>
+<td>27.28</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>48.18</td>
+<td>27.12</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>38.19</td>
+<td>27.11</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+<th>占用显存(GB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>40.89</td>
+<td>3.44</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>31.51</td>
+<td>2.31</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>49.56</td>
+<td>1.67</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>33.62</td>
+<td>1.64</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>1</td>
+<td>40.86</td>
+<td>8.74</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>31.31</td>
+<td>7.59</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>42.78</td>
+<td>6.95</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>32.90</td>
+<td>6.92</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>40.08</td>
+<td>15.92</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>31.19</td>
+<td>14.79</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>42.25</td>
+<td>14.14</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>33.24</td>
+<td>14.12</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>1</td>
+<td>34.09</td>
+<td>30.31</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>28.52</td>
+<td>29.18</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>31.30</td>
+<td>28.54</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>32.16</td>
+<td>28.51</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+<th>占用显存(GB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>37.97</td>
+<td>14.92</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>30.85</td>
+<td>8.97</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>36.17</td>
+<td>6.06</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>33.08</td>
+<td>5.93</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>1</td>
+<td>34.74</td>
+<td>20.26</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>31.13</td>
+<td>14.31</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>33.34</td>
+<td>11.40</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>30.86</td>
+<td>11.27</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>26.63</td>
+<td>27.71</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>24.58</td>
+<td>21.76</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>25.81</td>
+<td>18.86</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>27.61</td>
+<td>18.72</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>1</td>
+<td>17.49</td>
+<td>42.62</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>16.69</td>
+<td>36.67</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>17.17</td>
+<td>33.76</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>17.87</td>
+<td>33.63</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+<th>占用显存(GB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>2</td>
+<td>4.76</td>
+<td>110.29</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>5.55</td>
+<td>30.38</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>2</td>
+<td>4.90</td>
+<td>117.80</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>5.44</td>
+<td>35.67</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>4.58</td>
+<td>128.17</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>5.31</td>
+<td>43.11</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>2</td>
+<td>4.12</td>
+<td>163.77</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>4.72</td>
+<td>58.01</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+<th>占用显存(GB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>2</td>
+<td>7.45</td>
+<td>134.74</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>7.30</td>
+<td>71.00</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>9.05</td>
+<td>41.80</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>9.96</td>
+<td>41.31</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>2</td>
+<td>5.99</td>
+<td>144.38</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>5.93</td>
+<td>80.60</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>6.79</td>
+<td>47.90</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>7.49</td>
+<td>47.42</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>3</td>
+<td>4.12</td>
+<td>169.93</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>4.43</td>
+<td>95.14</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>4.87</td>
+<td>57.79</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>5.23</td>
+<td>57.30</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>3</td>
+<td>2.86</td>
+<td>209.03</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>2.83</td>
+<td>124.20</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>3.02</td>
+<td>107.94</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>1.85</td>
+<td>88.60</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</details>
+<h2 id="2-qwen2-vllm">2. Qwen2 vLLM 模型效率对比<a class="headerlink" href="#2-qwen2-vllm" title="Permanent link">&para;</a></h2>
+<p>数据由 vLLM 吞吐量测试脚本测得，可通过以下命令复现:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>vllm/benchmarks/benchmark_throughput.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span>--input-len<span class="w"> </span><span class="m">1000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span>--output-len<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span>--model<span class="w"> </span>&lt;model_path&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span>--num-prompts<span class="w"> </span>&lt;number<span class="w"> </span>of<span class="w"> </span>prompts&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span>--enforce-eager<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span>-tp<span class="w"> </span><span class="m">2</span>
+</span></code></pre></div></td></tr></table></div>
+<details open="open">
+<summary>Qwen2 不同 vLLM 模型的效率对比</summary>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:5"><input checked="checked" id="2-qwen2-vllm-05b" name="__tabbed_3" type="radio" /><input id="2-qwen2-vllm-15b-vllm" name="__tabbed_3" type="radio" /><input id="2-qwen2-vllm-7b" name="__tabbed_3" type="radio" /><input id="2-qwen2-vllm-57b-a14b" name="__tabbed_3" type="radio" /><input id="2-qwen2-vllm-72b" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="2-qwen2-vllm-05b">0.5B</label><label for="2-qwen2-vllm-15b-vllm">1.5B vLLM</label><label for="2-qwen2-vllm-7b">7B</label><label for="2-qwen2-vllm-57b-a14b">57B-A14B</label><label for="2-qwen2-vllm-72b">72B</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>270.49</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>235.95</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>240.07</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>233.31</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>1</td>
+<td>256.16</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>224.30</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>226.41</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>222.83</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>108.89</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>108.10</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>106.51</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>104.16</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>1</td>
+<td>97.20</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>94.49</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>93.94</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>92.23</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>175.55</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>172.28</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>184.58</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>170.87</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>1</td>
+<td>166.23</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>164.32</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>174.04</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>162.81</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>1</td>
+<td>83.67</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>98.63</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>97.65</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>92.48</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>1</td>
+<td>77.69</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>86.42</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>87.49</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>82.88</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>1</td>
+<td>80.45</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>114.32</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>143.40</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>96.65</td>
+</tr>
+<tr>
+<td>6,144</td>
+<td>BF16</td>
+<td>1</td>
+<td>76.41</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>107.02</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>131.55</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>91.38</td>
+</tr>
+<tr>
+<td>14,336</td>
+<td>BF16</td>
+<td>1</td>
+<td>66.54</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>89.72</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>97.93</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>76.87</td>
+</tr>
+<tr>
+<td>30,720</td>
+<td>BF16</td>
+<td>1</td>
+<td>55.83</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>71.58</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>81.48</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>63.62</td>
+</tr>
+<tr>
+<td>63,488</td>
+<td>BF16</td>
+<td>1</td>
+<td>41.20</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>49.37</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>54.12</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>45.89</td>
+</tr>
+<tr>
+<td>129,024</td>
+<td>BF16</td>
+<td>1</td>
+<td>25.01</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>1</td>
+<td>27.73</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>29.39</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>1</td>
+<td>27.13</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>2</td>
+<td>31.44</td>
+</tr>
+<tr>
+<td>6144</td>
+<td>BF16</td>
+<td>2</td>
+<td>31.77</td>
+</tr>
+<tr>
+<td>14336</td>
+<td>BF16</td>
+<td>2</td>
+<td>21.25</td>
+</tr>
+<tr>
+<td>30720</td>
+<td>BF16</td>
+<td>2</td>
+<td>20.24</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>输入长度</th>
+<th>量化</th>
+<th>GPU 数量</th>
+<th>速度(tokens/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BF16</td>
+<td>2</td>
+<td>17.68</td>
+</tr>
+<tr>
+<td></td>
+<td>BF16</td>
+<td>4</td>
+<td>30.01</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>27.56</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>29.60</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>42.82</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>27.73</td>
+</tr>
+<tr>
+<td>6,144</td>
+<td>BF16</td>
+<td>4</td>
+<td>27.98</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>25.46</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>1</td>
+<td>25.16</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>38.23</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>25.77</td>
+</tr>
+<tr>
+<td>14,336</td>
+<td>BF16</td>
+<td>4</td>
+<td>21.81</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>22.71</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>26.64</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>21.50</td>
+</tr>
+<tr>
+<td>30,720</td>
+<td>BF16</td>
+<td>4</td>
+<td>19.43</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>18.69</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>23.12</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>18.09</td>
+</tr>
+<tr>
+<td>63,488</td>
+<td>BF16</td>
+<td>4</td>
+<td>17.46</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>2</td>
+<td>15.30</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>13.23</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>13.14</td>
+</tr>
+<tr>
+<td>129,024</td>
+<td>BF16</td>
+<td>4</td>
+<td>11.70</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int8</td>
+<td>4</td>
+<td>12.94</td>
+</tr>
+<tr>
+<td></td>
+<td>GPTQ-Int4</td>
+<td>2</td>
+<td>8.33</td>
+</tr>
+<tr>
+<td></td>
+<td>AWQ</td>
+<td>2</td>
+<td>7.78</td>
+</tr>
+</tbody>
+</table>
+<p>不同参数设定下，表现可能会出现差异。</p>
+</div>
+</div>
+</div>
+</details>
+<p>混合专家模型 (Mixture-of-Experts, MoE) 与稠密模型相比，当批大小较大时，吞吐量更大。下表展示了有关数据：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>量化</th>
+<th>提示词</th>
+<th>QPS</th>
+<th>Tokens/s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen1.5-32B-Chat</td>
+<td>BF16</td>
+<td>100</td>
+<td>6.68</td>
+<td>7343.56</td>
+</tr>
+<tr>
+<td>Qwen2-57B-A14B-Instruct</td>
+<td>BF16</td>
+<td>100</td>
+<td>4.81</td>
+<td>5291.15</td>
+</tr>
+<tr>
+<td>Qwen1.5-32B-Chat</td>
+<td>BF16</td>
+<td>1000</td>
+<td>7.99</td>
+<td>8791.35</td>
+</tr>
+<tr>
+<td>Qwen2-57B-A14B-Instruct</td>
+<td>BF16</td>
+<td>1000</td>
+<td>5.18</td>
+<td>5698.37</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../quantization_benchmark/" class="md-footer__link md-footer__link--prev" aria-label="上一页: 模型效果">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                模型效果
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024, Mingmin Yu
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/QwenLM/Qwen2" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://qwen.readthedocs.io/zh-cn/latest" target="_blank" rel="noopener" title="qwen.readthedocs.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M96 0C43 0 0 43 0 96v320c0 53 43 96 96 96h320c17.7 0 32-14.3 32-32s-14.3-32-32-32v-64c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H96zm0 384h256v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16h192c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48h192c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tooltips", "content.tabs.link", "content.footnote.tooltips", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.indexes", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.af256bd8.min.js"></script>
+      
+        <script src="../../custom/javascripts/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
+      
+        <script src="../../assets/javascripts/toggle-sidebar.js" async></script>
+      
+    
+  </body>
+</html>
